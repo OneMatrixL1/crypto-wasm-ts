@@ -16,6 +16,16 @@ This suite benchmarks four different bound-check protocols:
 ```bash
 # From crypto-wasm-ts root directory
 ./tests/tracking-prove-performance/run-tests.sh
+
+# Or Yarn
+# Run all tests and generate dashboard
+yarn test:prove-perf 
+
+# Run only prove performance tests
+yarn test:prove-perf:only
+
+# Generate dashboard
+yarn prove:dashboard
 ```
 
 **The dashboard will automatically open in your browser! 🎨**
