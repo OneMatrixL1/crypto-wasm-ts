@@ -22,7 +22,7 @@ import {
     Statements,
     Witness,
     WitnessEqualityMetaStatement,
-    Witnesses,
+    Witnesses
 } from '../../src';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -33,10 +33,7 @@ import { getBoundCheckSnarkKeys, stringToBytes, getRevealedUnrevealed } from './
 describe('Bound Check Range Proof Performance Benchmarks', () => {
     const performanceResults: PerformanceResult[] = [];
     const outputDir = path.join(process.cwd(), 'performance-results');
-    const outputFile = path.join(
-        outputDir,
-        `prove-performance-${new Date().toISOString().replace(/:/g, '-')}.json`
-    );
+    const outputFile = path.join(outputDir, `prove-performance-${new Date().toISOString().replace(/:/g, '-')}.json`);
 
     // Test configuration
     const messageCount = 5;
@@ -86,7 +83,7 @@ describe('Bound Check Range Proof Performance Benchmarks', () => {
         sigPk = keypair.publicKey;
 
         // Encode messages for signing
-        const encodedMessages = messages.map(m => encodeMessageForSigningInConstantTime(m));
+        const encodedMessages = messages.map((m) => encodeMessageForSigningInConstantTime(m));
         sig = BBSPlusSignatureG1.generate(encodedMessages, sigSk, sigParams, true);
     });
 
@@ -99,9 +96,7 @@ describe('Bound Check Range Proof Performance Benchmarks', () => {
         performanceResults.forEach((result, index) => {
             console.log(`${index + 1}. ${result.name} `);
             console.log(`   Duration: ${result.duration.ms} ms`);
-            console.log(
-                `   Memory Delta(Heap Used): ${(result.memory.delta.heapUsed / 1024 / 1024).toFixed(2)} MB`
-            );
+            console.log(`   Memory Delta(Heap Used): ${(result.memory.delta.heapUsed / 1024 / 1024).toFixed(2)} MB`);
             console.log('');
         });
 
@@ -114,18 +109,16 @@ describe('Bound Check Range Proof Performance Benchmarks', () => {
                 nodeVersion: process.version,
                 platform: process.platform,
                 arch: process.arch,
-                totalTests: performanceResults.length,
+                totalTests: performanceResults.length
             },
             results: performanceResults,
             summary: {
                 totalDuration: performanceResults.reduce((sum, r) => sum + r.duration.ms, 0),
-                averageDuration:
-                    performanceResults.reduce((sum, r) => sum + r.duration.ms, 0) / performanceResults.length,
+                averageDuration: performanceResults.reduce((sum, r) => sum + r.duration.ms, 0) / performanceResults.length,
                 totalMemoryDelta: performanceResults.reduce((sum, r) => sum + r.memory.delta.heapUsed, 0),
                 averageMemoryDelta:
-                    performanceResults.reduce((sum, r) => sum + r.memory.delta.heapUsed, 0) /
-                    performanceResults.length,
-            },
+                    performanceResults.reduce((sum, r) => sum + r.memory.delta.heapUsed, 0) / performanceResults.length
+            }
         };
 
         fs.writeFileSync(outputFile, JSON.stringify(exportData, null, 2));
@@ -164,7 +157,7 @@ describe('Bound Check Range Proof Performance Benchmarks', () => {
             // Link signature witness to bound-check witness via witness equality
             const witnessEq = new WitnessEqualityMetaStatement();
             witnessEq.addWitnessRef(0, msgIdx); // Signature witness at index 0, message at msgIdx
-            witnessEq.addWitnessRef(1, 0);      // Bound-check witness at index 1, position 0
+            witnessEq.addWitnessRef(1, 0); // Bound-check witness at index 1, position 0
             const metaStatements = new MetaStatements();
             metaStatements.add(MetaStatement.witnessEquality(witnessEq));
 
@@ -335,9 +328,7 @@ describe('Bound Check Range Proof Performance Benchmarks', () => {
             const tracker = new PerformanceTracker('Set-Membership Check - Setup');
 
             tracker.start();
-            const p1 = new BoundCheckSmcParams(
-                stringToBytes('set-membership check based range proof testing')
-            );
+            const p1 = new BoundCheckSmcParams(stringToBytes('set-membership check based range proof testing'));
             boundCheckSmcParams = p1.decompress();
             tracker.stop();
 
@@ -478,11 +469,7 @@ describe('Bound Check Range Proof Performance Benchmarks', () => {
 
             const tracker = new PerformanceTracker('Set-Membership Check KV - Proof Verification');
 
-            const statement2 = Statement.boundCheckSmcWithKVVerifier(
-                min,
-                max,
-                boundCheckSmcKVVerifierParams
-            );
+            const statement2 = Statement.boundCheckSmcWithKVVerifier(min, max, boundCheckSmcKVVerifierParams);
             const verifierStatements = new Statements(statement2);
             const verifierProofSpec = new QuasiProofSpec(verifierStatements, new MetaStatements());
 
