@@ -21,6 +21,9 @@
     "test-ps": "TEST_SIGNATURE_SCHEME=PS yarn jest",
     "test-bbdt16": "TEST_SIGNATURE_SCHEME=BBDT16 yarn jest",
     "test-all": "yarn test-bbs && yarn test-bbs+ && yarn test-ps && yarn test-bbdt16",
+    "test:prove-perf": "./tests/tracking-prove-performance/run-prove-performance.sh",
+    "test:prove-perf:only": "NODE_OPTIONS='--expose-gc' yarn jest tests/tracking-prove-performance/bound-check-performance.spec.ts",
+    "prove:dashboard": "node tests/tracking-prove-performance/generate-dashboard.js",
     "typedoc": "typedoc src --out __typedoc__"
   },
   "license": "Apache-2.0",
