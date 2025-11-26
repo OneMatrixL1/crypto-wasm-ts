@@ -15,7 +15,7 @@ This suite benchmarks four different bound-check protocols:
 
 ```bash
 # From crypto-wasm-ts root directory
-./tests/tracking-prove-performance/run-tests.sh
+./tests/tracking-prove-performance/run-prove-performance.sh
 
 # Or Yarn
 # Run all tests and generate dashboard
@@ -82,7 +82,6 @@ Dashboard location: `performance-results/dashboard-bound-check.html`
 
 ```bash
 # Run tests only (with garbage collection)
-cd /Users/minhnt/1Matrix/crypto-wasm-ts
 NODE_OPTIONS="--expose-gc" yarn test tests/tracking-prove-performance/bound-check-performance.spec.ts
 
 # Generate dashboard from existing results
@@ -101,7 +100,7 @@ start performance-results/dashboard-bound-check.html  # Windows
 - `types.ts` - TypeScript type definitions
 - `utils.ts` - Helper functions
 - `generate-dashboard.js` - Dashboard generator
-- `run-tests.sh` - Automated test runner script
+- `run-prove-performance.sh` - Automated test runner script
 
 ## 📊 Output Examples
 
