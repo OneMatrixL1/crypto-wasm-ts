@@ -4,3 +4,6 @@ node_modules
 /dist
 /lib
 /__typedoc__
+
+# Performance benchmark results
+/performance-results

@@ -1,189 +1,167 @@
-# Performance Tracking for Proof Operations
+# 🚀 Bound Check Range Proof Performance Benchmarks
 
-This folder contains performance tracking utilities and tests for measuring proof generation and verification performance with a beautiful web-based dashboard UI.
+Comprehensive performance benchmarks for bound-check range proofs using four different protocols.
 
-## Structure
+## 🎯 Protocols Tested
 
-```
-tracking-prove-performance/
-├── types.ts                          # Type definitions for metrics
-├── performance-tracker.ts            # Performance tracking utility
-├── dashboard-generator.ts            # HTML dashboard generator
-├── bound-check-performance.spec.ts   # Bound check proof performance tests
-├── performance-dashboard.html        # Generated dashboard (after running tests)
-└── README.md                         # This file
-```
+This suite benchmarks four different bound-check protocols:
 
-## Features
+1. **LegoGroth16** - SNARK-based range proof (requires trusted setup)
+2. **Bulletproofs++** - Transparent range proof (no trusted setup)
+3. **Set-Membership Check (SMC)** - Set-membership based range proof
+4. **Set-Membership Check with Keyed Verification (SMC-KV)** - Optimized SMC with verifier secret key
 
-### 📊 Interactive Dashboard UI
-
-After running tests, an interactive HTML dashboard is automatically generated with:
-
-- **📈 Charts**: Time comparison, memory usage, and distribution charts using Chart.js
-- **📋 Tables**: Detailed metrics with color-coded performance indicators
-- **💳 Stat Cards**: Quick overview of total operations, average time, and memory usage
-- **🎨 Beautiful Design**: Modern gradient UI with smooth animations
-
-**Dashboard Preview:**
-- Time comparison bar charts (avg, min, max)
-- Memory usage visualization
-- Time distribution line charts
-- Detailed metrics table with timestamps
-- Responsive design for all screen sizes
-
-### PerformanceTracker
-
-A comprehensive utility for tracking:
-- **Time**: Execution time in milliseconds
-- **Memory**: Heap memory usage in MB
-- **Peak Memory**: Maximum memory usage during operation
-
-### Capabilities
-
-1. **Single Operation Tracking**
-   ```typescript
-   const { result, metrics } = await tracker.track('operation-name', async () => {
-       // Your operation here
-   });
-   ```
-
-2. **Benchmarking (Multiple Iterations)**
-   ```typescript
-   const stats = await tracker.benchmark('operation-name', async () => {
-       // Your operation here
-   }, 10); // 10 iterations
-   ```
-
-3. **Warmup Support**
-   ```typescript
-   const tracker = new PerformanceTracker({
-       warmupIterations: 2,  // Run 2 warmup iterations
-       iterations: 10,       // Default iterations for benchmark
-       verbose: true         // Print detailed logs
-   });
-   ```
-
-4. **Statistics**
-   - Average, min, max time
-   - Average and peak memory usage
-   - Grouped by operation name
-
-## Usage
-
-### Running Tests
+## 🚀 Quick Start
 
 ```bash
-# Run all performance tests
-npm test tracking-prove-performance
-
-# Run specific test file
-npm test tracking-prove-performance/bound-check-performance.spec.ts
-
-# Run with garbage collection enabled (recommended for accurate memory tracking)
-node --expose-gc node_modules/.bin/jest tracking-prove-performance
+# From crypto-wasm-ts root directory
+./tests/tracking-prove-performance/run-tests.sh
 ```
 
-### Example Output
+**The dashboard will automatically open in your browser! 🎨**
 
-```
-=== Performance Statistics ===
+## 📊 Metrics Measured
 
-Operation: BoundCheckSnarkSetup
-  Iterations: 10
-  Time (avg): 1234.56ms
-  Time (min): 1200.00ms
-  Time (max): 1300.00ms
-  Memory (avg): 45.23MB
-  Memory (peak): 120.50MB
-```
+For each protocol, the following operations are benchmarked:
 
-### Custom Performance Test
+- ⚙️ **Setup** - Parameter/key generation time and memory
+- 🔐 **Proof Generation** - Single proof creation time and memory
+- ✅ **Proof Verification** - Single proof verification time and memory
+- 📦 **Batch Generation** - 10 proofs creation time and memory
+- ✔️ **Batch Verification** - 10 proofs verification time and memory
 
-```typescript
-import { PerformanceTracker } from './performance-tracker';
+### Time Metrics
+- ⏱️ **Duration** - Execution time in milliseconds and seconds
+- 🔄 **Setup Time** - Parameter/key generation time
+- 🔐 **Proof Generation Time** - Time to create proof
+- ✅ **Verification Time** - Time to verify proof
 
-describe('My Performance Test', () => {
-    let tracker: PerformanceTracker;
+### Memory Metrics
+- 💾 **RSS** (Resident Set Size) - Total memory allocated
+- 🧠 **Heap Total** - Total heap size
+- 📈 **Heap Used** - Actual heap usage
+- 🔌 **External** - External memory (C++ objects)
+- 📊 **Delta** - Memory change during operation
 
-    beforeAll(() => {
-        tracker = new PerformanceTracker({
-            verbose: true,
-            warmupIterations: 2,
-            iterations: 10
-        });
-    });
+## 📈 Expected Performance
 
-    afterAll(() => {
-        tracker.printStats();
-    });
+(Results may vary by system)
 
-    it('should track my operation', async () => {
-        const stats = await tracker.benchmark(
-            'MyOperation',
-            async () => {
-                // Your operation here
-                return result;
-            },
-            10
-        );
+| Protocol | Setup | Proof Gen | Proof Verify | Batch Gen (10) | Batch Verify (10) |
+|----------|-------|-----------|--------------|----------------|-------------------|
+| LegoGroth16 | ~100ms | ~150-300ms | ~50-100ms | ~1500-3000ms | ~500-1000ms |
+| Bulletproofs++ | ~50ms | ~200-400ms | ~150-300ms | ~2000-4000ms | ~1500-3000ms |
+| SMC | ~50ms | ~180-350ms | ~120-250ms | ~1800-3500ms | ~1200-2500ms |
+| SMC-KV | ~50ms | ~180-350ms | ~80-150ms | ~1800-3500ms | ~800-1500ms |
 
-        expect(stats.avgTimeMs).toBeLessThan(1000); // Assert performance
-    });
-});
-```
+*Note: LegoGroth16 has slower setup but faster verification. SMC-KV offers the fastest verification.*
 
-## Metrics Exported
+## 🎨 Dashboard Features
 
-All metrics can be exported to JSON:
+The dashboard includes:
 
-```typescript
-const json = tracker.exportToJSON();
-// Save to file or send to monitoring system
-```
+- 📊 **Protocol Comparison Charts** - Compare performance across all four protocols
+- ⏱️ **Operation Breakdown** - Setup vs Generation vs Verification times
+- 💾 **Memory Analysis** - Memory usage patterns for each protocol
+- 📋 **Detailed Results Table** - All test results with performance badges
+- 🎯 **Protocol Tags** - Color-coded protocol identification
 
-JSON format:
-```json
-{
-  "config": {
-    "verbose": true,
-    "warmupIterations": 2,
-    "iterations": 10
-  },
-  "metrics": [
-    {
-      "operation": "BoundCheckSnarkSetup",
-      "timeMs": 1234.56,
-      "memoryMB": 45.23,
-      "peakMemoryMB": 120.50,
-      "timestamp": "2025-11-25T10:00:00.000Z"
-    }
-  ],
-  "stats": [
-    {
-      "operation": "BoundCheckSnarkSetup",
-      "count": 10,
-      "avgTimeMs": 1234.56,
-      "minTimeMs": 1200.00,
-      "maxTimeMs": 1300.00,
-      "avgMemoryMB": 45.23,
-      "peakMemoryMB": 120.50
-    }
-  ]
-}
+Dashboard location: `performance-results/dashboard-bound-check.html`
+
+## 📝 Manual Commands
+
+```bash
+# Run tests only (with garbage collection)
+cd /Users/minhnt/1Matrix/crypto-wasm-ts
+NODE_OPTIONS="--expose-gc" yarn test tests/tracking-prove-performance/bound-check-performance.spec.ts
+
+# Generate dashboard from existing results
+node tests/tracking-prove-performance/generate-dashboard.js
+
+# Open dashboard manually
+open performance-results/dashboard-bound-check.html  # macOS
+xdg-open performance-results/dashboard-bound-check.html  # Linux
+start performance-results/dashboard-bound-check.html  # Windows
 ```
 
-## Best Practices
+## 📁 Files
 
-1. **Enable Garbage Collection**: Run tests with `--expose-gc` flag for accurate memory measurements
-2. **Use Warmup Iterations**: First few iterations may be slower due to JIT compilation
-3. **Consistent Environment**: Run performance tests in a consistent environment
-4. **Multiple Iterations**: Use at least 10 iterations for reliable statistics
-5. **Monitor Trends**: Track metrics over time to detect performance regressions
+- `bound-check-performance.spec.ts` - TypeScript test suite
+- `performance-tracker.ts` - Performance tracking utility class
+- `types.ts` - TypeScript type definitions
+- `utils.ts` - Helper functions
+- `generate-dashboard.js` - Dashboard generator
+- `run-tests.sh` - Automated test runner script
 
-## Notes
+## 📊 Output Examples
 
-- Memory measurements are based on Node.js `process.memoryUsage()`
-- Time measurements use `performance.now()` for high precision
-- Garbage collection is triggered before each measurement (if available)
-- Peak memory represents the total heap size, not just the delta
+### Console Output
+```
+================================================================================
+Performance Report: LegoGroth16 - Proof Generation
+================================================================================
+⏱️  Duration: 245.67 ms (0.246s)
+
+📊 Memory Usage:
+   Start:
+     - RSS:        125.45 MB
+     - Heap Total: 45.23 MB
+     - Heap Used:  32.15 MB
+     - External:   2.34 MB
+   End:
+     - RSS:        128.90 MB
+     - Heap Total: 47.56 MB
+     - Heap Used:  34.89 MB
+     - External:   2.67 MB
+   Delta (Change):
+     - RSS:        3.45 MB
+     - Heap Total: 2.33 MB
+     - Heap Used:  2.74 MB
+     - External:   0.33 MB
+================================================================================
+```
+
+### JSON Export
+Results saved to: `performance-results/bound-check-performance-YYYY-MM-DDTHH-MM-SS.json`
+
+## 🔧 Requirements
+
+- Node.js >= 18.0.0
+- Dependencies installed (`yarn install`)
+- Optional: `--expose-gc` flag for accurate memory tracking
+
+## 🎓 Protocol Characteristics
+
+**LegoGroth16:**
+- ⚙️ Slower setup (~100ms) - requires trusted setup
+- 🚀 Fast verification (~50-100ms)
+- 💾 Moderate memory usage
+- ✅ Best for: Applications requiring fast verification
+
+**Bulletproofs++:**
+- ⚡ Fast setup (~50ms) - no trusted setup
+- 🐢 Slower operations (~200-400ms)
+- 💾 Higher memory usage
+- ✅ Best for: Transparent systems, no trusted setup requirement
+
+**Set-Membership Check:**
+- ⚡ Fast setup (~50ms)
+- ⚖️ Balanced performance (~180-350ms)
+- 💾 Moderate memory usage
+- ✅ Best for: General purpose range proofs
+
+**Set-Membership Check with KV:**
+- ⚡ Fast setup (~50ms)
+- 🚀 Fastest verification (~80-150ms)
+- 💾 Moderate memory usage
+- ✅ Best for: Applications with trusted verifiers
+
+## 📚 References
+
+- [crypto-wasm-ts Repository](https://github.com/docknetwork/crypto-wasm-ts)
+- [Bound Check Documentation](https://github.com/docknetwork/crypto-wasm-ts#bound-check-range-proof)
+- [Legosnark Paper](https://eprint.iacr.org/2019/142)
+
+---
+
+**Tip:** Dashboard uses Chart.js from CDN, requires internet to display charts! 📶

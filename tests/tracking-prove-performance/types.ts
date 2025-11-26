@@ -1,40 +1,54 @@
 /**
- * Performance metrics for tracking proof operations
+ * Type definitions for performance tracking
  */
-export interface PerformanceMetrics {
-    /** Operation name */
-    operation: string;
-    /** Time taken in milliseconds */
-    timeMs: number;
-    /** Memory used in MB */
-    memoryMB: number;
-    /** Peak memory in MB */
-    peakMemoryMB: number;
-    /** Timestamp when operation started */
-    timestamp: Date;
+
+export interface MemoryUsage {
+    rss: number;
+    heapTotal: number;
+    heapUsed: number;
+    external: number;
 }
 
-/**
- * Aggregated performance statistics
- */
-export interface PerformanceStats {
-    operation: string;
-    count: number;
-    avgTimeMs: number;
-    minTimeMs: number;
-    maxTimeMs: number;
-    avgMemoryMB: number;
-    peakMemoryMB: number;
+export interface MemoryDelta {
+    rss: number;
+    heapTotal: number;
+    heapUsed: number;
+    external: number;
 }
 
-/**
- * Configuration for performance tracking
- */
-export interface PerformanceConfig {
-    /** Enable detailed logging */
-    verbose?: boolean;
-    /** Number of warmup iterations before tracking */
-    warmupIterations?: number;
-    /** Number of iterations to track */
-    iterations?: number;
+export interface DurationMetrics {
+    ms: number;
+    seconds: number;
+}
+
+export interface PerformanceResult {
+    name: string;
+    timestamp: string;
+    duration: DurationMetrics;
+    memory: {
+        start: MemoryUsage;
+        end: MemoryUsage;
+        delta: MemoryDelta;
+    };
+}
+
+export interface BenchmarkMetadata {
+    testDate: string;
+    nodeVersion: string;
+    platform: string;
+    arch: string;
+    totalTests: number;
+}
+
+export interface BenchmarkSummary {
+    totalDuration: number;
+    averageDuration: number;
+    totalMemoryDelta: number;
+    averageMemoryDelta: number;
+}
+
+export interface BenchmarkExport {
+    metadata: BenchmarkMetadata;
+    results: PerformanceResult[];
+    summary: BenchmarkSummary;
 }
